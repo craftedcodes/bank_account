@@ -6,8 +6,13 @@ Wir haben also verschiedene Datentypen, die wir als Value in der MutableMap absp
 Reihenfolge für die Value wäre möglicherweise so:
 mutableListOf("Account Name", "Account Passwort", "Initialer Kontostand", "Aktueller Kontostand", "Eingeloggt?", "Ein- oder Auszahlungsbetrag (unterschieden mit +/-)", "Überweisung: Überweisungsempfänger und Betrag") -> Dann kann ich über den Index auf die ersten 5 Daten sicher zugreifen, während ich die anderen Daten über den String-Anfang filtere und dabei herausfinden kann, ob eine Ein- oder Auszahlung oder eine Überweisung stattgefunden hat.
  */
-
 //! Variablen, die in allen Funktionen benötigt werden
+// Register der Bankangestellten.
+val bankEmployees : MutableMap<String, MutableList<String>> = mutableMapOf(
+		"Hannah Arendt" to mutableListOf("Passwort123456789", "logged i"),
+		"Bernd Depp" to mutableListOf("1234567890", "logged out"),
+                                                          )
+
 // Register über alle Konten, wo abgeprüft wird, was für Bankkontotypen pro Kund*in geführt werden.
 val registerAllAccounts : MutableMap<String, MutableList<String>> = mutableMapOf()
 
@@ -112,6 +117,17 @@ fun isDeposit(name : String, register : MutableMap<String, MutableList<String>> 
 	return name in register
 }
 
+// Hilfsfunktion, die im Boolean herausgibt, ob der Name wirklich zu einem Bankmitarbeiter gehört.
+fun isEmployee(name : String, register : MutableMap<String, MutableList<String>> = bankEmployees) : Boolean {
+	return name in register
+}
+
+// Hilfsfunktion, die im Boolean herausgibt, ob Bankangestellter eingeloggt ist oder nicht.
+fun isLoggedIn(name : String, register : MutableMap<String, MutableList<String>> = bankEmployees) : Boolean {
+	val logInState : String = register[name]?.get(1) !!
+	return logInState == "eingeloggt"
+}
+
 // Hilfsfunktion, die kontrolliert, in welchem Register der Name des Kunden/der Kundin existiert.
 fun filterAccountTypes(name : String, register : MutableMap<String, String>) {
 	println("""Es existieren folgende Arten von Konten unter dem Namen $name:
@@ -126,6 +142,50 @@ fun isEnoughMoney(name : String, money : Double, register : MutableMap<String, M
 }
 
 //! Hauptfunktionen
+// Funktion, die Mitarbeiter einloggt.
+fun loginEmployee(name: String, password: String, register : MutableMap<String, MutableList<String>>) : String {
+	val employeeDataPassword : String = register[name]?.get(0) !!
+	var logInState : String = register[name]?.get(1) !!
+	println("Please type the name of the employee to login.")
+	val nameEntered : String = readln()
+	if (isEmployee(nameEntered) && ! isLoggedIn(nameEntered)) {
+		println("Please enter your password.")
+		val passwordEntered : String = readln()
+		return if (passwordEntered == employeeDataPassword) {
+			println("Now you're logged in.")
+			logInState = "logged in"
+			logInState
+		} else {
+			println("You're password was wrong")
+			logInState
+		}
+	} else if (isEmployee(nameEntered) && isLoggedIn(nameEntered)) {
+		println("You are already logged in.")
+		return logInState
+	} else {
+		println("No employee with the name $nameEntered works here.")
+		return "error"
+	}
+}
+
+// Funktion, die Mitarbeiter ausloggt.
+fun logOutEmployee(name: String, password: String, register : MutableMap<String, MutableList<String>>) : String {
+	val employeeDataPassword : String = register[name]?.get(0) !!
+	var logInState : String = register[name]?.get(1) !!
+	println("Please type the name of the employee, you want to log out.")
+	val nameEntered : String = readln()
+	return if (isEmployee(nameEntered) && isLoggedIn(nameEntered)) {
+		println("Now you're logged out.")
+		logInState = "logged out"
+		logInState
+	} else if (isEmployee(nameEntered) && ! isLoggedIn(nameEntered)) {
+		println("You are already logged out.")
+		logInState
+	} else {
+		println("No employee with the name $nameEntered works here.")
+		"error"
+	}
+}
 
 fun main()
 {
