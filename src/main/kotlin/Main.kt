@@ -118,8 +118,6 @@ fun filterAccountTypes(name : String, register : MutableMap<String, String>) {
 		${register[name]}""".trimMargin())
 }
 
-
-
 // Hilfsfunktion, die überprüft, ob man genug Geld auf seinem Konto hat.
 fun isEnoughMoney(name : String, money : Double, register : MutableMap<String, MutableList<String>>) : Boolean
 {
