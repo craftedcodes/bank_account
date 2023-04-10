@@ -1,0 +1,6 @@
+# Kreiere ein Bankmanagementsystem für Sparkonten
+## Aufgabe
+Sparkontos: Implementiere eine Art von Konto. Dieses Konto erlaubt den Kunden zwar nicht, Geld abzuheben, aber dafür erhalten sie am Jahresende einen größeren Zins auf ihr Erspartes.
+- Benutzereingaben: Programmiere an verschiedenen Schnittpunkten der Bank, die Möglichkeit via readln() 
+- Eingaben zu machen: Kundenname, Account Name, Account Passwort, initialer Kontostand, aktueller Kontostand, Ein- oder Auszahlungsbetrag, Überweisungsempfänger und -betrag, etc.. Stelle mithilfe von try-catch sicher, dass fehlerhafte Eingaben nicht das Programm zum Abstürzen bringen.
+- Accountmanagement: Implementiere eine MutableMap, in der du Accountdaten speichern kannst (also Benutzername und Passwort). Dann kannst du innerhalb deiner Main-Funktion immer zuerst einen Login starten. Implementiere dafür also die 2 Funktionen logIn() und logOut(). Implementiere gegebenenfalls einen Account, den Bankangestellte nutzen können, um neue Accounts zu erstellen oder neue Konten zu eröffnen. Du wirst wahrscheinlich dann dein Register überarbeiten müssen. Im Register können nun Paare gespeichert werden, bei denen zu dem Key AccountNamen jeweils eine Liste/Map von Bankkonten gespeichert ist. Eingeloggte Kunden sollten nur Zugriff auf ihre eigenen Konten besitzen.
