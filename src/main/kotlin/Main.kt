@@ -88,7 +88,7 @@ fun calNewBalance(
 		isAdd : Boolean,
                  ) : String
 {
-	var currentBalance : String = register[name]!![3]
+	var currentBalance : String = register[name] !![3]
 	// Überprüft, ob Geld hinzugefügt werden soll
 	if (isAdd)
 	{
@@ -129,7 +129,7 @@ fun isEmployee(name : String, register : MutableMap<String, MutableList<String>>
 // Hilfsfunktion, die im Boolean herausgibt, ob Bankangestellter eingeloggt ist oder nicht.
 fun isLoggedIn(name : String, register : MutableMap<String, MutableList<String>> = bankEmployees) : Boolean
 {
-	val logInState : String = register[name]!![1]
+	val logInState : String = register[name] !![1]
 	return logInState == "eingeloggt"
 }
 
@@ -143,9 +143,13 @@ fun filterAccountTypes(name : String, register : MutableMap<String, String>)
 }
 
 // Hilfsfunktion, die überprüft, ob man genug Geld auf seinem Konto hat.
-fun isEnoughMoneySavings(name : String, money : Double, register : MutableMap<String, MutableList<String>> = registerSavingAccounts) : Boolean
+fun isEnoughMoneySavings(
+		name : String,
+		money : Double,
+		register : MutableMap<String, MutableList<String>> = registerSavingAccounts,
+                        ) : Boolean
 {
-	val currentBalance : Double = register[name]!![3].toDouble()
+	val currentBalance : Double = register[name] !![3].toDouble()
 	return currentBalance >= money
 }
 
@@ -211,7 +215,8 @@ fun logOutEmployee(name : String, password : String, register : MutableMap<Strin
 }
 
 // Diese Funktion fügt einen neuen Kunden dem Gesamtregister hinzu.
-fun addNewCustomer(nameEmployee : String) : MutableMap<String, MutableList<String>> {
+fun addNewCustomer(nameEmployee : String) : MutableMap<String, MutableList<String>>
+{
 	if (isEmployee(nameEmployee) && isLoggedIn(nameEmployee))
 	{
 		println(
@@ -220,15 +225,20 @@ fun addNewCustomer(nameEmployee : String) : MutableMap<String, MutableList<Strin
 	""".trimMargin()
 		       )
 		var nameCustomer : String = readln()
-		return if (isCustomer(nameCustomer)) {
+		return if (isCustomer(nameCustomer))
+		{
 			val listOfKeysSize = filterCustomers(nameCustomer, registerAllAccounts).size
 			nameCustomer = "$nameCustomer $listOfKeysSize"
-			println("""Because we already have customers with your name, I register your account with the name $nameCustomer.
+			println(
+					"""Because we already have customers with your name, I register your account with the name $nameCustomer.
 				Later, I will register your type of account.
-			""".trimMargin())
+			""".trimMargin()
+			       )
 			registerAllAccounts[nameCustomer] = mutableListOf<String>()
 			registerAllAccounts
-		} else {
+		}
+		else
+		{
 			registerAllAccounts[nameCustomer] = mutableListOf<String>()
 			registerAllAccounts
 			
@@ -267,10 +277,14 @@ fun addNewSavingsAccount(nameEmployee : String) : MutableMap<String, MutableList
 				println("An error occurred. Please try again.")
 				registerSavingAccounts
 			}
-		} else if (isExactCustomer(nameCustomer, registerAllAccounts) && isSavings(nameCustomer)) {
+		}
+		else if (isExactCustomer(nameCustomer, registerAllAccounts) && isSavings(nameCustomer))
+		{
 			println("You already have a saving account.")
 			return registerSavingAccounts
-		} else {
+		}
+		else
+		{
 			println("You are no customer yet. Please become a customer first.")
 			return registerSavingAccounts
 		}
@@ -287,59 +301,94 @@ fun addNewSavingsAccount(nameEmployee : String) : MutableMap<String, MutableList
 }
 
 // Funktion, die Bankkonten zum Gesamtregister hinzufügt.
-fun addAccountTypes(name : String, register : MutableMap<String, MutableList<String>> = registerAllAccounts) : MutableMap<String, MutableList<String>> {
+fun addAccountTypes(
+		name : String,
+		register : MutableMap<String, MutableList<String>> = registerAllAccounts,
+                   ) : MutableMap<String, MutableList<String>>
+{
 	val accountTypes = register[name]
-	return if (isCustomer(name) && ! accountTypes!!.contains("Deposit Account") && isDeposit(name) && ! accountTypes.contains("Saving Account") && isSavings(name)) {
+	return if (isCustomer(name) && ! accountTypes !!.contains("Deposit Account") && isDeposit(name) && ! accountTypes.contains(
+					"Saving Account"
+	                                                                                                                          ) && isSavings(
+					name
+	                                                                                                                                        )
+	)
+	{
 		accountTypes.add("Deposit Account")
 		accountTypes.add("Saving Account")
 		registerAllAccounts
-	} else if (isCustomer(name) && ! accountTypes!!.contains("Deposit Account") && isDeposit(name)) {
+	}
+	else if (isCustomer(name) && ! accountTypes !!.contains("Deposit Account") && isDeposit(name))
+	{
 		accountTypes.add("Deposit Account")
 		registerAllAccounts
-	} else if (isCustomer(name) && ! accountTypes!!.contains("Saving Account") && isSavings(name)) {
+	}
+	else if (isCustomer(name) && ! accountTypes !!.contains("Saving Account") && isSavings(name))
+	{
 		accountTypes.add("Saving Account")
 		registerAllAccounts
-	} else {
+	}
+	else
+	{
 		println("All account types already registered")
 		registerAllAccounts
 	}
 }
 
 // Funktion, die Bankkonten zum Gesamtregister hinzufügt.
-fun removeAccountTypes(name : String, register : MutableMap<String, MutableList<String>> = registerAllAccounts, ) : MutableMap<String, MutableList<String>> {
+fun removeAccountTypes(
+		name : String,
+		register : MutableMap<String, MutableList<String>> = registerAllAccounts,
+                      ) : MutableMap<String, MutableList<String>>
+{
 	val accountTypes : MutableList<String>? = register[name]
 	val isNoSaving : Boolean = ! registerSavingAccounts.contains(name)
 	val isNoDeposit : Boolean = ! registerDepositAccounts.contains(name)
 	val registerValue : String = register.values.toString()
 	val containsSaving : Boolean = registerValue.contains("Saving Account")
 	val containsDeposit : Boolean = registerValue.contains("Deposit Account")
-	return if (isCustomer(name) && isNoSaving && isNoDeposit && containsSaving && containsDeposit) {
-		try {
-			accountTypes!!.remove("Saving Account")
-		accountTypes.remove("Deposit Account")
-		return registerAllAccounts
-		} catch (e: Exception) {
-			println("Error occurred")
-			return registerAllAccounts
-		}
-	} else if (isCustomer(name) && ! isNoSaving && containsSaving) {
-		try {
-			accountTypes!!.remove("Deposit Account")
-		return registerAllAccounts
-		} catch (e: Exception) {
-			println("Error occurred")
-			return registerAllAccounts
-		}
-	} else if (isCustomer(name) && ! isNoDeposit && containsDeposit) {
+	return if (isCustomer(name) && isNoSaving && isNoDeposit && containsSaving && containsDeposit)
+	{
 		try
 		{
-			accountTypes!!.remove("Saving Account")
+			accountTypes !!.remove("Saving Account")
+			accountTypes.remove("Deposit Account")
 			return registerAllAccounts
-		} catch (e: Exception) {
+		}
+		catch (e : Exception)
+		{
 			println("Error occurred")
 			return registerAllAccounts
 		}
-	} else {
+	}
+	else if (isCustomer(name) && ! isNoSaving && containsSaving)
+	{
+		try
+		{
+			accountTypes !!.remove("Deposit Account")
+			return registerAllAccounts
+		}
+		catch (e : Exception)
+		{
+			println("Error occurred")
+			return registerAllAccounts
+		}
+	}
+	else if (isCustomer(name) && ! isNoDeposit && containsDeposit)
+	{
+		try
+		{
+			accountTypes !!.remove("Saving Account")
+			return registerAllAccounts
+		}
+		catch (e : Exception)
+		{
+			println("Error occurred")
+			return registerAllAccounts
+		}
+	}
+	else
+	{
 		println("All account types already registered")
 		registerAllAccounts
 	}
@@ -491,38 +540,54 @@ fun deleteCustomer(nameEmployee : String) : MutableMap<String, MutableList<Strin
 }
 
 // Funktion über Geld Einzahlungen.
-fun addMoneySavings(register : MutableMap<String, MutableList<String>> = registerSavingAccounts, isAdd : Boolean = true) : MutableMap<String, MutableList<String>> {
+fun addMoneySavings(
+		register : MutableMap<String, MutableList<String>> = registerSavingAccounts,
+		isAdd : Boolean = true,
+                   ) : MutableMap<String, MutableList<String>>
+{
 	println("Under which name is your account registered?")
 	val name : String = readln()
-	println("""How much money do you want to add to your saving account?
-		Please write it in the Format: 12345.12""".trimMargin())
+	println(
+			"""How much money do you want to add to your saving account?
+		Please write it in the Format: 12345.12""".trimMargin()
+	       )
 	val money : Double = readln().toDouble()
 	return try
 	{
 		val newBalance = calNewBalance(name, register, money, isAdd)
-		registerSavingAccounts[name]!!.add("+ $newBalance")
+		registerSavingAccounts[name] !!.add("+ $newBalance")
 		println("$newBalance € were added to the account of $name")
 		registerSavingAccounts
-	} catch (e: Exception) {
+	}
+	catch (e : Exception)
+	{
 		println("An error occurred.")
 		registerSavingAccounts
 	}
 }
 
 // Funktion über Geld Auszahlungen.
-fun substractMoneySavings(register : MutableMap<String, MutableList<String>> = registerSavingAccounts, isAdd : Boolean = false) : MutableMap<String, MutableList<String>> {
+fun substractMoneySavings(
+		register : MutableMap<String, MutableList<String>> = registerSavingAccounts,
+		isAdd : Boolean = false,
+                         ) : MutableMap<String, MutableList<String>>
+{
 	println("Under which name is your account registered?")
 	val name : String = readln()
-	println("""How much money do you want to take out from your saving account?
-		Please write it in the Format: 12345.12""".trimMargin())
+	println(
+			"""How much money do you want to take out from your saving account?
+		Please write it in the Format: 12345.12""".trimMargin()
+	       )
 	val money : Double = readln().toDouble()
 	return try
 	{
 		val newBalance = calNewBalance(name, register, money, isAdd)
-		registerSavingAccounts[name]!!.add("- $newBalance")
+		registerSavingAccounts[name] !!.add("- $newBalance")
 		println("$newBalance € were taken from the account of $name")
 		registerSavingAccounts
-	} catch (e: Exception) {
+	}
+	catch (e : Exception)
+	{
 		println("An error occurred.")
 		registerSavingAccounts
 	}
@@ -603,7 +668,9 @@ fun transferSaving() : MutableMap<String, MutableList<String>>
 			println("$nameReceiver seems to not be our customer yet")
 			return registerSavingAccounts
 		}
-	} else if (isSavings(nameSender) && areMoreCustomers(nameSender, registerSavingAccounts)) {
+	}
+	else if (isSavings(nameSender) && areMoreCustomers(nameSender, registerSavingAccounts))
+	{
 		val nameSenderNew = whichCustomer(nameSender, registerSavingAccounts)
 		
 		println("Who do you want to send money?")
@@ -675,7 +742,9 @@ fun transferSaving() : MutableMap<String, MutableList<String>>
 			return registerSavingAccounts
 		}
 		
-	} else {
+	}
+	else
+	{
 		println("Seems like you don't have an account here yet.")
 		return registerSavingAccounts
 	}
